@@ -1,0 +1,811 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RegulusAI – Dein KI-Compliance-Assistent</title>
+  <meta name="description" content="RegulusAI: Der KI-gestützte Compliance-Buddy für KMU. Automatisierte Vorlagen, Checklisten, Erinnerungen und sichere Beratung – einfach, seriös, techy." />
+  <meta name="theme-color" content="#0E1B4D" />
+  <meta property="og:title" content="RegulusAI – Dein KI-Compliance-Assistent" />
+  <meta property="og:description" content="Automatisierte DSGVO-Vorlagen, Checklisten & Erinnerungen. Einfach. Seriös. Sicher." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="/og-image.png" />
+  <meta name="color-scheme" content="light">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      /* Palette – heller Hintergrund + dunkelblauer Akzent */
+      --bg:#FFFFFF;               /* Hintergrund */
+      --surface:#FFFFFF;          /* Karten/Flächen */
+      --ink:#0B1220;              /* Primärtext (fast schwarz) */
+      --muted:#667085;            /* Sekundärtext */
+      --brand:#0E1B4D;            /* Dunkelblau */
+      --brand-2:#1C3FAA;          /* Mittelblau (dezente Verläufe/Hover) */
+      --line:#E6EAF2;             /* Linien/Border */
+      --shadow:0 12px 30px rgba(2, 6, 23, .06);
+      --radius:16px;
+      --radius-lg:22px;
+      --space: clamp(16px, 1.6vw, 24px);
+      --section-y: clamp(88px, 10vw, 120px);  /* Mehr Luft zwischen Sektionen */
+      --container: 1280px;         /* etwas breiter als vorher */
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0; font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      background:
+        radial-gradient(1200px 700px at 80% -20%, rgba(28,63,170,0.06), transparent 60%),
+        radial-gradient(800px 600px at -10% 20%, rgba(14,27,77,0.05), transparent 60%),
+        var(--bg);
+      color:var(--ink);
+      line-height:1.65;
+      overflow-x:hidden;
+    }
+    .container{max-width:var(--container); margin:0 auto; padding:0 var(--space)}
+    a{color:inherit; text-decoration:none}
+    .btn{display:inline-flex; align-items:center; gap:.6rem; font-weight:600; border-radius:12px; padding:.9rem 1.1rem; border:1px solid transparent; transition:transform .2s ease, box-shadow .2s ease, background .2s ease, color .2s ease}
+    .btn:active{transform:translateY(1px)}
+    .btn.primary{background:linear-gradient(135deg, var(--brand), var(--brand-2)); color:#fff; box-shadow:0 14px 30px rgba(14,27,77,.22)}
+    .btn.primary:hover{box-shadow:0 20px 42px rgba(14,27,77,.28)}
+    .btn.ghost{border-color:var(--line); background:#fff; color:var(--brand)}
+    .btn.ghost:hover{background:#F8FAFF}
+
+    /* Skip link */
+    .skip{position:absolute; left:-9999px; top:auto; width:1px; height:1px; overflow:hidden}
+    .skip:focus{left:16px; top:12px; width:auto; height:auto; padding:.5rem .75rem; background:#000; color:#fff; border-radius:8px; z-index:9999}
+
+    /* Header */
+    header{
+      position:sticky; top:0; z-index:1000;
+      backdrop-filter:saturate(140%) blur(10px);
+      background:rgba(255,255,255,.80);
+      border-bottom:1px solid var(--line);
+      transition: box-shadow .2s ease, background .2s ease, transform .2s ease;
+    }
+    header.scrolled{background:#fff; box-shadow:var(--shadow)}
+    .nav{display:flex; align-items:center; justify-content:space-between; padding:14px 0}
+    .brand{display:flex; align-items:center; gap:.7rem; font-weight:800; letter-spacing:.2px}
+    .logo{
+      width:34px; height:34px; border-radius:10px;
+      background:conic-gradient(from 210deg, var(--brand-2), var(--brand), #0e2a7a, var(--brand-2));
+      box-shadow:inset 0 0 0 1px rgba(0,0,0,.06);
+      position:relative;
+    }
+    .logo::after{content:""; position:absolute; inset:1px; border-radius:9px; background:radial-gradient(circle at 28% 28%, rgba(255,255,255,.55), transparent 50%)}
+    .navlinks{display:flex; gap:1.2rem; align-items:center}
+    .navlinks a{opacity:.92; position:relative}
+    .navlinks a.active::after{content:""; position:absolute; left:0; right:0; bottom:-8px; height:2px; background:linear-gradient(90deg, transparent, var(--brand-2), transparent)}
+    .navlinks a:hover{opacity:1}
+    .hamburger{display:none; padding:.6rem .7rem; border:1px solid var(--line); border-radius:12px; background:#fff}
+
+    /* Language switch */
+    .lang{display:flex; gap:.4rem; align-items:center; border:1px solid var(--line); border-radius:999px; padding:2px; background:#fff}
+    .lang button{
+      padding:.35rem .6rem; border:none; border-radius:999px; background:transparent; cursor:pointer; font-weight:600; color:var(--muted)
+    }
+    .lang button.active{background:linear-gradient(135deg, var(--brand), var(--brand-2)); color:#fff}
+
+    /* Mobile menu */
+    .mobile{display:none; padding:12px 0; border-top:1px solid var(--line); background:#fff}
+    .mobile a{display:block; padding:.75rem 0}
+
+    /* Sections */
+    section{padding:var(--section-y) 0}
+    section + section{border-top:1px solid var(--line); background:
+      linear-gradient(180deg, rgba(14,27,77,0.02), rgba(255,255,255,0) 26%)}
+    .section-title{font-size: clamp(1.8rem, 2.8vw, 2.2rem); margin:0 0 .7rem; letter-spacing:-.02em; color:var(--ink)}
+    .kicker{color:var(--muted); margin:0 auto 1.6rem; max-width:72ch}
+
+    /* Hero */
+    .hero{position:relative; padding:calc(var(--section-y) + 12px) 0 var(--section-y)}
+    .hero-grid{display:grid; grid-template-columns: 1.15fr 1fr; gap:2.6rem; align-items:center}
+    .eyebrow{display:inline-flex; align-items:center; gap:.5rem; font-size:.86rem; color:var(--muted); border:1px solid var(--line); padding:.35rem .6rem; border-radius:999px; background:#fff}
+    h1{font-size: clamp(2.2rem, 4.6vw, 3.4rem); line-height:1.08; margin:.7rem 0 1rem; letter-spacing:-0.02em}
+    .lead{font-size: clamp(1.04rem, 1.6vw, 1.18rem); color:#475569; max-width: 62ch}
+    .cta{display:flex; gap:.8rem; flex-wrap:wrap; margin-top:1.2rem}
+
+    /* Mock panel */
+    .panel{
+      position:relative; background:#fff; border:1px solid var(--line); border-radius:var(--radius-lg);
+      box-shadow:var(--shadow); overflow:hidden; transform-style:preserve-3d;
+    }
+    .panel:hover{transform:perspective(1000px) rotateX(1deg) rotateY(-1.5deg)}
+    .panel::before{
+      content:""; position:absolute; inset:-1px; border-radius:calc(var(--radius-lg) + 1px); padding:1px;
+      background:linear-gradient(135deg, rgba(28,63,170,.45), rgba(255,255,255,.5), rgba(14,27,77,.35));
+      -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite:xor; mask-composite:exclude
+    }
+    .panel-header{display:flex; justify-content:space-between; align-items:center; padding:.8rem 1rem; border-bottom:1px solid var(--line); background:linear-gradient(180deg, #FAFBFF, #F6F8FE)}
+    .dots{display:flex; gap:.4rem}
+    .dot{width:10px; height:10px; border-radius:50%; background:#E2E8F0; box-shadow:inset 0 -1px 0 rgba(0,0,0,.06)}
+    .panel-body{padding:1rem;}
+    .chat{display:flex; flex-direction:column; gap:.8rem; max-height:380px; overflow:auto}
+    .msg{display:flex; gap:.6rem; align-items:flex-start}
+    .avatar{width:28px;height:28px;border-radius:50%; background:linear-gradient(135deg, var(--brand-2), var(--brand))}
+    .bubble{flex:1; background:#F8FAFF; border:1px solid var(--line); padding:.8rem .9rem; border-radius:14px}
+
+    /* Grids */
+    .grid{display:grid; grid-template-columns:repeat(3,1fr); gap:1.4rem}
+    .card{
+      background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:1.1rem;
+      box-shadow:0 6px 18px rgba(14,27,77,.05);
+      transition:transform .18s ease, box-shadow .18s ease, outline-color .18s ease, background .18s ease
+    }
+    .card:hover{transform:translateY(-3px); box-shadow:0 14px 32px rgba(14,27,77,.12); outline:1px solid rgba(28,63,170,.35)}
+    .icon{width:28px;height:28px; color:var(--brand)}
+
+    /* Steps / How it works */
+    .steps{display:grid; grid-template-columns:repeat(3,1fr); gap:1.4rem}
+    .step{position:relative; padding:1.1rem; border-radius:var(--radius); border:1px solid var(--line); background:linear-gradient(180deg, #fff, #FBFCFF)}
+    .step::before{
+      content:attr(data-step); position:absolute; top:-12px; left:12px;
+      background:linear-gradient(135deg, var(--brand), var(--brand-2)); color:#fff; font-weight:700; font-size:.8rem; padding:.25rem .55rem; border-radius:999px; box-shadow:0 6px 14px rgba(14,27,77,.25)
+    }
+
+    /* Security */
+    .sec-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:1.4rem}
+
+    /* Pricing */
+    .pricing{display:grid; grid-template-columns:repeat(3,1fr); gap:1.4rem; align-items:stretch}
+    .price-toggle{display:flex; align-items:center; gap:.6rem; justify-content:center; margin:.8rem 0 1.4rem}
+    .switch{position:relative; width:56px; height:30px; background:#F2F4F8; border-radius:999px; border:1px solid var(--line)}
+    .switch input{opacity:0; width:0; height:0}
+    .thumb{position:absolute; top:3px; left:3px; width:24px; height:24px; border-radius:50%; background:linear-gradient(135deg, var(--brand), var(--brand-2)); transition:left .2s ease}
+    .switch input:checked + .thumb{left:29px}
+
+    .price-card{position:relative; padding:1.2rem; background:#fff; border:1px solid var(--line); border-radius:var(--radius); display:flex; flex-direction:column; box-shadow:var(--shadow)}
+    .price-card.reco{outline:2px solid rgba(28,63,170,.6)}
+    .price{font-size:2.2rem; font-weight:800; color:var(--brand)}
+    .small{color:var(--muted); font-size:.96rem}
+    ul.clean{list-style:none; padding:0; margin:0}
+    ul.clean li{display:flex; gap:.6rem; margin:.55rem 0}
+    .grow{margin-top:auto}
+
+    /* Newsletter */
+    .nl{
+      display:grid; grid-template-columns:1fr auto; gap: .6rem;
+      background:linear-gradient(135deg, #F7FAFF, #FFFFFF);
+      border:1px solid var(--line); padding:1rem; border-radius:var(--radius)
+    }
+    .nl input{
+      padding:.9rem 1rem; border-radius:12px; border:1px solid var(--line); background:#fff; color:var(--ink); outline:none; width:100%
+    }
+
+    /* FAQ */
+    .faq{max-width:900px}
+    details{background:#fff; border:1px solid var(--line); padding: .9rem 1rem; border-radius: 14px; box-shadow:0 6px 18px rgba(14,27,77,.05)}
+    details+details{margin-top:.7rem}
+    summary{cursor:pointer; font-weight:600; color:var(--ink)}
+
+    /* Footer */
+    footer{border-top:1px solid var(--line); padding:44px 0; background:linear-gradient(to top, #F7F9FE, #FFFFFF)}
+    .foot{display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:1.2rem}
+    .foot a{color:var(--muted)}
+
+    /* Reveal on scroll */
+    [data-reveal]{opacity:0; transform:translateY(12px); transition:opacity .6s ease, transform .6s ease}
+    [data-reveal].visible{opacity:1; transform:none}
+
+    /* Back to top */
+    .to-top{position:fixed; right:18px; bottom:18px; padding:.7rem .8rem; border-radius:12px; background:#fff; border:1px solid var(--line); display:none; z-index:50; box-shadow:var(--shadow)}
+
+    /* Cookie bar */
+    .cookie{
+      position:fixed; left:16px; right:16px; bottom:16px; background:#fff; border:1px solid var(--line);
+      border-radius:16px; padding:1rem; box-shadow:var(--shadow); display:none
+    }
+
+    /* Shine badge */
+    .shine{position:relative}
+    .shine::after{content:""; position:absolute; inset:0; background:linear-gradient(120deg, transparent 0%, rgba(255,255,255,.6) 40%, transparent 80%); transform:translateX(-120%); animation:shine 4s infinite ease}
+    @keyframes shine{to{transform:translateX(120%)}}
+
+    /* Responsive */
+    @media (max-width: 1100px){
+      .grid{grid-template-columns:1fr 1fr}
+      .pricing{grid-template-columns:1fr}
+      .sec-grid{grid-template-columns:1fr 1fr}
+      .hero-grid{grid-template-columns:1fr}
+      .foot{grid-template-columns:1fr 1fr}
+    }
+    @media (max-width: 640px){
+      .grid,.sec-grid{grid-template-columns:1fr}
+    }
+    @media (prefers-reduced-motion: reduce){
+      *{animation:none !important; transition:none !important}
+    }
+  </style>
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"SoftwareApplication",
+    "name":"RegulusAI",
+    "applicationCategory":"BusinessApplication",
+    "operatingSystem":"Web",
+    "description":"KI-gestützter Compliance-Assistent für KMU mit Vorlagen, Checklisten und Erinnerungen.",
+    "offers":{"@type":"Offer","price":"29","priceCurrency":"EUR"}
+  }
+  </script>
+</head>
+<body>
+  <a class="skip" href="#main" data-i18n="skip">Zum Inhalt springen</a>
+
+  <!-- Header -->
+  <header id="hdr">
+    <div class="container nav" aria-label="Hauptnavigation">
+      <a href="#" class="brand" aria-label="RegulusAI Startseite">
+        <span class="logo" aria-hidden="true"></span>
+        <span>RegulusAI</span>
+      </a>
+
+      <nav class="navlinks" aria-label="Primäre Navigation">
+        <a href="#features" data-i18n="nav.features">Funktionen</a>
+        <a href="#pricing" data-i18n="nav.pricing">Preise</a>
+        <a href="#security" data-i18n="nav.security">Sicherheit</a>
+        <a href="#faq" data-i18n="nav.faq">FAQ</a>
+        <a href="#newsletter" data-i18n="nav.newsletter">Newsletter</a>
+
+        <!-- Language switch -->
+        <div class="lang" role="group" aria-label="Sprachauswahl">
+          <button type="button" id="langDE" class="active" aria-pressed="true">DE</button>
+          <button type="button" id="langEN" aria-pressed="false">EN</button>
+        </div>
+
+        <a class="btn primary magnet" href="#contact" data-i18n="nav.cta">Kostenlos starten</a>
+      </nav>
+
+      <button class="hamburger" aria-label="Menü öffnen" id="menuBtn">☰</button>
+    </div>
+    <div class="container mobile" id="mobileMenu" hidden>
+      <a href="#features" data-i18n="nav.features">Funktionen</a>
+      <a href="#pricing" data-i18n="nav.pricing">Preise</a>
+      <a href="#security" data-i18n="nav.security">Sicherheit</a>
+      <a href="#faq" data-i18n="nav.faq">FAQ</a>
+      <a href="#newsletter" data-i18n="nav.newsletter">Newsletter</a>
+      <div style="display:flex; align-items:center; gap:.6rem; margin-top:.6rem">
+        <div class="lang" role="group" aria-label="Sprachauswahl (mobil)">
+          <button type="button" id="langDEm" class="active" aria-pressed="true">DE</button>
+          <button type="button" id="langENm" aria-pressed="false">EN</button>
+        </div>
+        <a class="btn primary magnet" href="#contact" data-i18n="nav.cta">Kostenlos starten</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- Hero -->
+    <section class="hero container">
+      <div class="hero-grid">
+        <div>
+          <span class="eyebrow">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3l7 4v5c0 5-3 9-7 9s-7-4-7-9V7l7-4z" stroke="currentColor" stroke-width="1.5"/></svg>
+            <span data-i18n="hero.eyebrow">Dein KI-Compliance-Assistent</span>
+          </span>
+          <h1 class="shine" data-i18n="hero.title">RegulusAI – Compliance, einfach erklärt und automatisiert.</h1>
+          <p class="lead" data-i18n="hero.lead">
+            Automatisierte DSGVO-Vorlagen, interaktive Checklisten und smarte Erinnerungen. Modern, seriös und sicher – speziell für KMU, Agenturen und Shops.
+          </p>
+          <div class="cta">
+            <a class="btn primary magnet" href="#pricing" data-i18n="hero.cta1">Preise ansehen</a>
+            <a class="btn ghost" href="#features" data-i18n="hero.cta2">Funktionen entdecken</a>
+          </div>
+        </div>
+        <div>
+          <div class="panel" aria-label="Produkt-Vorschau">
+            <div class="panel-header">
+              <div class="dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+              <small class="small">RegulusAI – Demo</small>
+            </div>
+            <div class="panel-body">
+              <div class="chat">
+                <div class="msg">
+                  <div class="avatar" aria-hidden="true"></div>
+                  <div class="bubble"><strong data-i18n="hero.chat.user">Nutzer:</strong> <span data-i18n="hero.chat.q1">Brauche ich für meinen Hosting-Provider einen Auftragsverarbeitungsvertrag?</span></div>
+                </div>
+                <div class="msg">
+                  <div class="avatar" aria-hidden="true"></div>
+                  <div class="bubble"><strong>RegulusAI:</strong> <span data-i18n="hero.chat.a1">Ja, sobald personenbezogene Daten verarbeitet werden. Ich generiere dir gleich eine AVV-Vorlage mit den relevanten Klauseln und einer Checkliste zur Prüfung deines Providers.</span></div>
+                </div>
+                <div class="msg">
+                  <div class="avatar" aria-hidden="true"></div>
+                  <div class="bubble"><strong data-i18n="hero.chat.user">Nutzer:</strong> <span data-i18n="hero.chat.q2">Und was gehört in meine Datenschutzerklärung?</span></div>
+                </div>
+                <div class="msg">
+                  <div class="avatar" aria-hidden="true"></div>
+                  <div class="bubble"><strong>RegulusAI:</strong> <span data-i18n="hero.chat.a2">Zweck, Rechtsgrundlagen, Empfänger, Speicherdauer, Rechte der Betroffenen und Kontakt des Verantwortlichen. Ich stelle dir eine personalisierte Vorlage bereit.</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="container" data-reveal>
+      <h2 class="section-title" data-i18n="features.title">Funktionen, die wirklich helfen</h2>
+      <p class="kicker" data-i18n="features.kicker">Konzentriere dich auf dein Business – RegulusAI kümmert sich um Vorlagen, Checklisten und Erinnerungen.</p>
+      <div class="grid">
+        <article class="card">
+          <h3>
+            <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M4 12h10M4 17h7" stroke="currentColor" stroke-width="1.5"/></svg>
+            <span data-i18n="feat.doc.title">Dokument-Generator</span>
+          </h3>
+          <p data-i18n="feat.doc.text">Erzeuge DSGVO-Dokumente wie Datenschutzerklärung, Impressum und AV-Vertrag in Minuten.</p>
+        </article>
+        <article class="card">
+          <h3>
+            <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3l7 4-7 4-7-4 7-4zm-7 8l7 4 7-4" stroke="currentColor" stroke-width="1.5"/></svg>
+            <span data-i18n="feat.chat.title">KI-Chat</span>
+          </h3>
+          <p data-i18n="feat.chat.text">Frag in Klartext. Erhalte präzise, praxisnahe Antworten – ohne Juristen-Deutsch.</p>
+        </article>
+        <article class="card">
+          <h3>
+            <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12l4 4L19 6" stroke="currentColor" stroke-width="1.5"/></svg>
+            <span data-i18n="feat.check.title">Checklisten</span>
+          </h3>
+          <p data-i18n="feat.check.text">Interaktive To-Dos für Website, Shop & Agentur – mit Fortschrittsanzeige.</p>
+        </article>
+        <article class="card">
+          <h3>
+            <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 8v5l3 2" stroke="currentColor" stroke-width="1.5"/></svg>
+            <span data-i18n="feat.remind.title">Erinnerungen</span>
+          </h3>
+          <p data-i18n="feat.remind.text">Fristen im Blick: Ablauf von Verträgen, Reports & Aktualisierungen rechtzeitig erledigen.</p>
+        </article>
+        <article class="card">
+          <h3>
+            <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3a9 9 0 100 18 9 9 0 000-18zm-2 9l2 2 4-4" stroke="currentColor" stroke-width="1.5"/></svg>
+            <span data-i18n="feat.sec.title">Sicherheit</span>
+          </h3>
+          <p data-i18n="feat.sec.text">Seriöse Architektur, Verschlüsselung & DSGVO-konforme Datenverarbeitung als Prinzip.</p>
+        </article>
+        <article class="card">
+          <h3>
+            <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 6h18M3 12h12M3 18h8" stroke="currentColor" stroke-width="1.5"/></svg>
+            <span data-i18n="feat.simple.title">Einfach & seriös</span>
+          </h3>
+          <p data-i18n="feat.simple.text">Klarer Aufbau, verständliche Sprache – kein Overkill, sondern echte Hilfe.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="container" id="how" data-reveal>
+      <h2 class="section-title" data-i18n="how.title">So funktioniert’s</h2>
+      <p class="kicker" data-i18n="how.kicker">In drei Schritten zu mehr Compliance-Sicherheit.</p>
+      <div class="steps">
+        <div class="step" data-step="1">
+          <h3 data-i18n="how.s1.title">Profil anlegen</h3>
+          <p data-i18n="how.s1.text">Branche, Größe und Systeme angeben – damit Antworten und Vorlagen passen.</p>
+        </div>
+        <div class="step" data-step="2">
+          <h3 data-i18n="how.s2.title">Fragen stellen & Vorlagen generieren</h3>
+          <p data-i18n="how.s2.text">Der KI-Buddy liefert dir Dokumente und Checklisten, zugeschnitten auf deinen Use Case.</p>
+        </div>
+        <div class="step" data-step="3">
+          <h3 data-i18n="how.s3.title">Erinnerungen aktivieren</h3>
+          <p data-i18n="how.s3.text">Fristen & Audits nie wieder verpassen – mit E-Mail-Hinweisen und Dashboard.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Security -->
+    <section id="security" class="container" data-reveal>
+      <h2 class="section-title" data-i18n="sec.title">Sicherheit & Vertrauen</h2>
+      <p class="kicker" data-i18n="sec.kicker">Wir setzen auf Verschlüsselung, strikte Zugriffskontrollen und DSGVO-konforme Verarbeitung – in der EU.</p>
+      <div class="sec-grid">
+        <div class="card"><strong data-i18n="sec.e.title">Verschlüsselung</strong><br/><span data-i18n="sec.e.text">TLS in Transit, ruhende Daten verschlüsselt.</span></div>
+        <div class="card"><strong data-i18n="sec.r.title">Rollen & Rechte</strong><br/><span data-i18n="sec.r.text">Feingranulare Zugriffssteuerung für Teams.</span></div>
+        <div class="card"><strong data-i18n="sec.t.title">Transparenz</strong><br/><span data-i18n="sec.t.text">Protokolle und Export deiner Daten jederzeit.</span></div>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" class="container" data-reveal>
+      <h2 class="section-title" data-i18n="pricing.title">Preise</h2>
+      <p class="kicker" data-i18n="pricing.kicker">Einfach starten. Später skalieren.</p>
+      <div class="price-toggle">
+        <span class="small" data-i18n="pricing.monthly">Monatlich</span>
+        <label class="switch">
+          <input type="checkbox" id="billingToggle" aria-label="Jährliche Abrechnung umschalten">
+          <span class="thumb" aria-hidden="true"></span>
+        </label>
+        <span class="small"><span data-i18n="pricing.yearly">Jährlich</span> <span style="color:var(--brand); font-weight:700">–15%</span></span>
+      </div>
+      <div class="pricing">
+        <div class="price-card">
+          <h3 data-i18n="pricing.t1">Starter</h3>
+          <p class="price"><span data-price data-month="29" data-year="25">€29</span><span class="small"> / <span data-i18n="pricing.permonth">Monat</span></span></p>
+          <ul class="clean small">
+            <li data-i18n="pricing.t1.l1">• Dokument-Generator (Basis)</li>
+            <li data-i18n="pricing.t1.l2">• KI-Chat (Fair-Use)</li>
+            <li data-i18n="pricing.t1.l3">• Checklisten (Website/Shop)</li>
+          </ul>
+          <div class="grow"></div>
+          <div style="margin-top: .8rem"><a class="btn ghost" href="#contact" data-i18n="pricing.cta1">Loslegen</a></div>
+        </div>
+        <div class="price-card reco">
+          <h3 data-i18n="pricing.t2">Pro</h3>
+          <p class="price"><span data-price data-month="99" data-year="84">€99</span><span class="small"> / <span data-i18n="pricing.permonth">Monat</span></span></p>
+          <ul class="clean small">
+            <li data-i18n="pricing.t2.l1">• Alles aus Starter</li>
+            <li data-i18n="pricing.t2.l2">• Team-Funktion</li>
+            <li data-i18n="pricing.t2.l3">• Erinnerungen & Reports</li>
+          </ul>
+          <div class="grow"></div>
+          <div style="margin-top: .8rem"><a class="btn primary magnet" href="#contact" data-i18n="pricing.cta2">Kostenlos testen</a></div>
+        </div>
+        <div class="price-card">
+          <h3 data-i18n="pricing.t3">Business</h3>
+          <p class="price"><span data-price data-month="299" data-year="254">€299</span><span class="small"> / <span data-i18n="pricing.permonth">Monat</span></span></p>
+          <ul class="clean small">
+            <li data-i18n="pricing.t3.l1">• Integrationen (API)</li>
+            <li data-i18n="pricing.t3.l2">• Audit-Exports</li>
+            <li data-i18n="pricing.t3.l3">• Priorisierter Support</li>
+          </ul>
+          <div class="grow"></div>
+          <div style="margin-top: .8rem"><a class="btn ghost" href="#contact" data-i18n="pricing.cta3">Kontakt aufnehmen</a></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section id="newsletter" class="container" data-reveal>
+      <h2 class="section-title" data-i18n="nl.title">Bleib auf dem Laufenden</h2>
+      <p class="kicker" data-i18n="nl.kicker">News zu RegulusAI & Beta-Zugang. Double-Opt-In. Kein Spam.</p>
+
+      <form class="nl" id="mc-embedded-subscribe-form" method="post" target="_blank"
+            action="https://YOUR_DC.list-manage.com/subscribe/post?u=YOUR_U&id=YOUR_ID&f_id=YOUR_FID" novalidate>
+        <input aria-label="E-Mail" type="email" name="EMAIL" id="mce-EMAIL" placeholder="dein@mail.com" required>
+        <button class="btn primary magnet" type="submit" data-i18n="nl.cta">Anmelden</button>
+        <label class="small" style="grid-column:1/-1; display:flex; gap:.5rem; align-items:flex-start">
+          <input type="checkbox" required style="margin-top:.35rem">
+          <span data-i18n="nl.consent">Ich willige in den Erhalt des Newsletters ein und habe die</span> <a href="#" data-modal="datenschutz" data-i18n="nl.privacy">Datenschutz-Hinweise</a> <span data-i18n="nl.read">gelesen.</span>
+        </label>
+
+        <!-- Honeypot gegen Bots: Name exakt aus deinem Mailchimp-Embed (b_ + u + id) -->
+        <div style="position:absolute; left:-5000px" aria-hidden="true">
+          <input type="text" name="b_YOUR_U_YOUR_ID" tabindex="-1" value="">
+        </div>
+
+        <small class="small" style="grid-column:1/-1" data-i18n="nl.note">Nach dem Klick erhältst du eine E-Mail zur Bestätigung (Double-Opt-In).</small>
+      </form>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="container faq" data-reveal>
+      <h2 class="section-title" data-i18n="faq.title">Häufige Fragen</h2>
+      <details>
+        <summary data-i18n="faq.q1">Ist RegulusAI rechtlich verbindlich?</summary>
+        <p data-i18n="faq.a1">RegulusAI liefert Hilfestellungen, Vorlagen und strukturierte Informationen. Für verbindliche Rechtsberatung wende dich bitte an eine/n Anwältin/Anwalt.</p>
+      </details>
+      <details>
+        <summary data-i18n="faq.q2">Wo werden Daten verarbeitet?</summary>
+        <p data-i18n="faq.a2">Geplante Verarbeitung in der EU. Genauere Angaben folgen zum Produktstart in unserer Datenschutz-Erklärung.</p>
+      </details>
+      <details>
+        <summary data-i18n="faq.q3">Für wen ist die Lösung gedacht?</summary>
+        <p data-i18n="faq.a3">Für KMU, Startups, Agenturen und Online-Shops, die Compliance pragmatisch angehen wollen.</p>
+      </details>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="container" data-reveal>
+      <h2 class="section-title" data-i18n="contact.title">Kontakt</h2>
+      <p class="kicker" data-i18n="contact.copy">Schreib uns an <a href="mailto:hallo@regulus.ai">hallo@regulus.ai</a> – wir melden uns.</p>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container foot">
+      <div>
+        <div class="brand"><span class="logo" aria-hidden="true"></span><span>RegulusAI</span></div>
+        <p class="small" data-i18n="foot.tagline">Der KI-gestützte Compliance-Buddy für KMU. Seriös, sicher, einfach.</p>
+      </div>
+      <div>
+        <strong data-i18n="foot.product">Produkt</strong>
+        <ul class="clean small" style="margin-top:.4rem">
+          <li><a href="#features" data-i18n="nav.features">Funktionen</a></li>
+          <li><a href="#pricing" data-i18n="nav.pricing">Preise</a></li>
+          <li><a href="#faq" data-i18n="nav.faq">FAQ</a></li>
+        </ul>
+      </div>
+      <div>
+        <strong data-i18n="foot.legal">Rechtliches</strong>
+        <ul class="clean small" style="margin-top:.4rem">
+          <li><a href="#" data-modal="impressum" data-i18n="foot.imprint">Impressum</a></li>
+          <li><a href="#" data-modal="datenschutz" data-i18n="foot.privacy">Datenschutz</a></li>
+          <li><a href="#" data-modal="agb" data-i18n="foot.terms">AGB</a></li>
+        </ul>
+      </div>
+      <div>
+        <strong data-i18n="foot.follow">Folge uns</strong>
+        <ul class="clean small" style="margin-top:.4rem">
+          <li><a href="#">LinkedIn</a></li>
+          <li><a href="#">X (Twitter)</a></li>
+          <li><a href="#">GitHub</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Back to top button -->
+  <a href="#" class="to-top" id="toTop" aria-label="Nach oben">↑</a>
+
+  <!-- Cookie bar -->
+  <div class="cookie container" id="cookieBar" role="dialog" aria-live="polite" aria-label="Cookie Hinweis">
+    <strong data-i18n="cookie.title">Cookies & Datenschutz</strong>
+    <p class="small">
+      <span data-i18n="cookie.copy">Wir verwenden Cookies für grundlegende Funktionen. Details findest du in unserer</span>
+      <a href="#" data-modal="datenschutz" data-i18n="foot.privacy">Datenschutz-Erklärung</a>.
+    </p>
+    <div style="display:flex; gap:.6rem; flex-wrap:wrap">
+      <button class="btn primary magnet" id="acceptCookies" data-i18n="cookie.accept">Akzeptieren</button>
+      <button class="btn ghost" id="declineCookies" data-i18n="cookie.decline">Ablehnen</button>
+    </div>
+  </div>
+
+  <!-- Modals (Impressum / Datenschutz / AGB) -->
+  <template id="modalTpl">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Dialog" style="position:fixed; inset:0; display:grid; place-items:center; background:rgba(0,0,0,.35); z-index:2000">
+      <div class="panel" style="max-width:900px; width:92%; max-height:80vh; overflow:auto">
+        <div class="panel-header" style="display:flex; justify-content:space-between; align-items:center">
+          <strong class="title">Titel</strong>
+          <button class="btn ghost close" data-i18n="modal.close">Schließen</button>
+        </div>
+        <div class="panel-body content small"></div>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    /* ----- Header shadow on scroll ----- */
+    const hdr = document.getElementById('hdr');
+    window.addEventListener('scroll', ()=> {
+      if(window.scrollY>6){ hdr.classList.add('scrolled'); } else { hdr.classList.remove('scrolled'); }
+    });
+
+    /* ----- Mobile menu ----- */
+    const menuBtn=document.getElementById('menuBtn');
+    const mobileMenu=document.getElementById('mobileMenu');
+    menuBtn?.addEventListener('click',()=>{
+      const hidden=mobileMenu.hasAttribute('hidden');
+      mobileMenu.toggleAttribute('hidden');
+      menuBtn.setAttribute('aria-expanded', hidden? 'true':'false');
+    });
+
+    /* ----- Reveal on scroll ----- */
+    const revealEls=[...document.querySelectorAll('[data-reveal]')];
+    const io=new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); } });
+    },{threshold:0.15});
+    revealEls.forEach(el=>io.observe(el));
+
+    /* ----- Back to top ----- */
+    const toTop=document.getElementById('toTop');
+    window.addEventListener('scroll',()=>{ toTop.style.display = window.scrollY>600 ? 'inline-flex' : 'none'; });
+
+    /* ----- Magnetic buttons (subtil) ----- */
+    const magnets=[...document.querySelectorAll('.magnet')];
+    magnets.forEach(btn=>{
+      btn.addEventListener('mousemove', (e)=>{
+        const r=btn.getBoundingClientRect();
+        const x=e.clientX-r.left-r.width/2; const y=e.clientY-r.top-r.height/2;
+        btn.style.transform=`translate(${x*0.06}px, ${y*0.06}px)`;
+      });
+      btn.addEventListener('mouseleave', ()=>{ btn.style.transform='translate(0,0)'; });
+    });
+
+    /* ----- Pricing toggle (monthly <-> yearly -15%) ----- */
+    const toggle=document.getElementById('billingToggle');
+    const prices=[...document.querySelectorAll('[data-price]')];
+    function setBilling(yearly){
+      prices.forEach(p=>{ const m=p.getAttribute('data-month'); const y=p.getAttribute('data-year'); p.textContent = `€${ yearly? y : m }`; });
+    }
+    toggle?.addEventListener('change', (e)=> setBilling(e.target.checked));
+
+    /* ----- Scroll spy for header links ----- */
+    const links=[...document.querySelectorAll('.navlinks a[href^="#"]')].filter(a=>!a.closest('.lang'));
+    const sections=links.map(a=>document.querySelector(a.getAttribute('href'))).filter(Boolean);
+    const spy=new IntersectionObserver((entries)=>{
+      entries.forEach(ent=>{
+        const i=sections.indexOf(ent.target);
+        if(i>-1){ const link=links[i]; if(ent.isIntersecting){ links.forEach(l=>l.classList.remove('active')); link.classList.add('active'); } }
+      });
+    },{rootMargin:'-40% 0px -55% 0px', threshold:0});
+    sections.forEach(s=> spy.observe(s));
+
+    /* ----- Cookie bar ----- */
+    const cookieBar=document.getElementById('cookieBar');
+    const accept=document.getElementById('acceptCookies');
+    const decline=document.getElementById('declineCookies');
+    const cookieKey='regulusai_cookie_consent_v1';
+    const hideCookie=()=>{cookieBar.style.display='none'}
+    if(!localStorage.getItem(cookieKey)){
+      cookieBar.style.display='block';
+    }
+    accept?.addEventListener('click',()=>{ localStorage.setItem(cookieKey,'accepted'); hideCookie(); })
+    decline?.addEventListener('click',()=>{ localStorage.setItem(cookieKey,'declined'); hideCookie(); })
+
+    /* ----- Simple modal system for legal pages ----- */
+    const modalTpl=document.getElementById('modalTpl');
+    const openModal=(title, html)=>{
+      const node=modalTpl.content.cloneNode(true);
+      const modal=node.querySelector('.modal');
+      node.querySelector('.title').textContent=title;
+      node.querySelector('.content').innerHTML=html;
+      node.querySelector('.close').addEventListener('click',()=>modal.remove());
+      modal.addEventListener('click', (e)=>{ if(e.target===modal) modal.remove(); });
+      document.body.appendChild(node);
+    };
+    const legalLinks=[...document.querySelectorAll('[data-modal]')];
+    legalLinks.forEach(a=>a.addEventListener('click',(e)=>{
+      e.preventDefault();
+      const t=a.getAttribute('data-modal');
+      const blocks={
+        impressum:`<p><strong>Impressum</strong></p>
+          <p>RegulusAI (Beispiel) · Musterstraße 1 · 12345 Berlin · Deutschland<br> 
+          E-Mail: hallo@regulus.ai</p>
+          <p>Verantwortlich i.S.d. § 5 TMG: Max Mustermann</p>` ,
+        datenschutz:`<p><strong>Datenschutz</strong></p>
+          <p>Hinweis: Diese Platzhalter-Erklärung dient nur der Demo. Eine rechtskonforme Erklärung folgt zum Produktstart.</p>
+          <p>Wir verarbeiten personenbezogene Daten ausschließlich im Rahmen der DSGVO. Details zu Zweck, Rechtsgrundlagen, Speicherdauer und Betroffenenrechten werden hier veröffentlicht.</p>`,
+        agb:`<p><strong>Allgemeine Geschäftsbedingungen (AGB)</strong></p>
+          <p>Platzhalter für AGB. Individuelle Bedingungen zum Start verfügbar.</p>`
+      };
+      openModal({impressum:i18nText('foot.imprint'), datenschutz:i18nText('foot.privacy'), agb:i18nText('foot.terms')}[t], blocks[t] || '');
+    }));
+
+    /* ===== i18n (DE/EN) ===== */
+    const i18n = {
+      de: {
+        skip: "Zum Inhalt springen",
+        nav: {features:"Funktionen", pricing:"Preise", security:"Sicherheit", faq:"FAQ", newsletter:"Newsletter", cta:"Kostenlos starten"},
+        hero: {
+          eyebrow:"Dein KI-Compliance-Assistent",
+          title:"RegulusAI – Compliance, einfach erklärt und automatisiert.",
+          lead:"Automatisierte DSGVO-Vorlagen, interaktive Checklisten und smarte Erinnerungen. Modern, seriös und sicher – speziell für KMU, Agenturen und Shops.",
+          cta1:"Preise ansehen", cta2:"Funktionen entdecken",
+          chat:{user:"Nutzer:", q1:"Brauche ich für meinen Hosting-Provider einen Auftragsverarbeitungsvertrag?",
+                a1:"Ja, sobald personenbezogene Daten verarbeitet werden. Ich generiere dir gleich eine AVV-Vorlage mit den relevanten Klauseln und einer Checkliste zur Prüfung deines Providers.",
+                q2:"Und was gehört in meine Datenschutzerklärung?",
+                a2:"Zweck, Rechtsgrundlagen, Empfänger, Speicherdauer, Rechte der Betroffenen und Kontakt des Verantwortlichen. Ich stelle dir eine personalisierte Vorlage bereit."}
+        },
+        features:{title:"Funktionen, die wirklich helfen", kicker:"Konzentriere dich auf dein Business – RegulusAI kümmert sich um Vorlagen, Checklisten und Erinnerungen."},
+        feat:{
+          doc:{title:"Dokument-Generator", text:"Erzeuge DSGVO-Dokumente wie Datenschutzerklärung, Impressum und AV-Vertrag in Minuten."},
+          chat:{title:"KI-Chat", text:"Frag in Klartext. Erhalte präzise, praxisnahe Antworten – ohne Juristen-Deutsch."},
+          check:{title:"Checklisten", text:"Interaktive To-Dos für Website, Shop & Agentur – mit Fortschrittsanzeige."},
+          remind:{title:"Erinnerungen", text:"Fristen im Blick: Ablauf von Verträgen, Reports & Aktualisierungen rechtzeitig erledigen."},
+          sec:{title:"Sicherheit", text:"Seriöse Architektur, Verschlüsselung & DSGVO-konforme Datenverarbeitung als Prinzip."},
+          simple:{title:"Einfach & seriös", text:"Klarer Aufbau, verständliche Sprache – kein Overkill, sondern echte Hilfe."}
+        },
+        how:{title:"So funktioniert’s", kicker:"In drei Schritten zu mehr Compliance-Sicherheit.",
+          s1:{title:"Profil anlegen", text:"Branche, Größe und Systeme angeben – damit Antworten und Vorlagen passen."},
+          s2:{title:"Fragen stellen & Vorlagen generieren", text:"Der KI-Buddy liefert dir Dokumente und Checklisten, zugeschnitten auf deinen Use Case."},
+          s3:{title:"Erinnerungen aktivieren", text:"Fristen & Audits nie wieder verpassen – mit E-Mail-Hinweisen und Dashboard."}
+        },
+        sec:{title:"Sicherheit & Vertrauen", kicker:"Wir setzen auf Verschlüsselung, strikte Zugriffskontrollen und DSGVO-konforme Verarbeitung – in der EU.",
+          e:{title:"Verschlüsselung", text:"TLS in Transit, ruhende Daten verschlüsselt."},
+          r:{title:"Rollen & Rechte", text:"Feingranulare Zugriffssteuerung für Teams."},
+          t:{title:"Transparenz", text:"Protokolle und Export deiner Daten jederzeit."}
+        },
+        pricing:{title:"Preise", kicker:"Einfach starten. Später skalieren.", monthly:"Monatlich", yearly:"Jährlich", permonth:"Monat",
+          t1:"Starter", t2:"Pro", t3:"Business",
+          t1l1:"• Dokument-Generator (Basis)", t1l2:"• KI-Chat (Fair-Use)", t1l3:"• Checklisten (Website/Shop)",
+          t2l1:"• Alles aus Starter", t2l2:"• Team-Funktion", t2l3:"• Erinnerungen & Reports",
+          t3l1:"• Integrationen (API)", t3l2:"• Audit-Exports", t3l3:"• Priorisierter Support",
+          cta1:"Loslegen", cta2:"Kostenlos testen", cta3:"Kontakt aufnehmen"
+        },
+        nl:{title:"Bleib auf dem Laufenden", kicker:"News zu RegulusAI & Beta-Zugang. Double-Opt-In. Kein Spam.", cta:"Anmelden",
+            consent:"Ich willige in den Erhalt des Newsletters ein und habe die", privacy:"Datenschutz-Hinweise", read:"gelesen.",
+            note:"Nach dem Klick erhältst du eine E-Mail zur Bestätigung (Double-Opt-In)."},
+        faq:{title:"Häufige Fragen",
+             q1:"Ist RegulusAI rechtlich verbindlich?", a1:"RegulusAI liefert Hilfestellungen, Vorlagen und strukturierte Informationen. Für verbindliche Rechtsberatung wende dich bitte an eine/n Anwältin/Anwalt.",
+             q2:"Wo werden Daten verarbeitet?", a2:"Geplante Verarbeitung in der EU. Genauere Angaben folgen zum Produktstart in unserer Datenschutz-Erklärung.",
+             q3:"Für wen ist die Lösung gedacht?", a3:"Für KMU, Startups, Agenturen und Online-Shops, die Compliance pragmatisch angehen wollen."
+        },
+        contact:{title:"Kontakt", copy:'Schreib uns an <a href="mailto:hallo@regulus.ai">hallo@regulus.ai</a> – wir melden uns.'},
+        foot:{tagline:"Der KI-gestützte Compliance-Buddy für KMU. Seriös, sicher, einfach.", product:"Produkt", legal:"Rechtliches", follow:"Folge uns", imprint:"Impressum", privacy:"Datenschutz", terms:"AGB"},
+        cookie:{title:"Cookies & Datenschutz", copy:"Wir verwenden Cookies für grundlegende Funktionen. Details findest du in unserer", accept:"Akzeptieren", decline:"Ablehnen"},
+        modal:{close:"Schließen"}
+      },
+      en: {
+        skip:"Skip to content",
+        nav:{features:"Features", pricing:"Pricing", security:"Security", faq:"FAQ", newsletter:"Newsletter", cta:"Start for free"},
+        hero:{
+          eyebrow:"Your AI compliance assistant",
+          title:"RegulusAI – Compliance made simple and automated.",
+          lead:"Automated GDPR templates, interactive checklists and smart reminders. Modern, trustworthy and secure – built for SMBs, agencies and shops.",
+          cta1:"See pricing", cta2:"Explore features",
+          chat:{user:"User:", q1:"Do I need a data processing agreement with my hosting provider?",
+                a1:"Yes, as soon as personal data is processed. I’ll generate a DPA template with the relevant clauses and a checklist to assess your provider.",
+                q2:"What must be included in my privacy policy?",
+                a2:"Purpose, legal bases, recipients, retention, data subject rights and controller contact. I’ll prepare a personalized template."}
+        },
+        features:{title:"Features that actually help", kicker:"Focus on your business – RegulusAI handles templates, checklists, and reminders."},
+        feat:{
+          doc:{title:"Document generator", text:"Create GDPR documents like privacy policy, legal notice and DPA in minutes."},
+          chat:{title:"AI chat", text:"Ask in plain language. Get precise, practical answers – without legalese."},
+          check:{title:"Checklists", text:"Interactive to-dos for website, shop & agency – with progress tracking."},
+          remind:{title:"Reminders", text:"Never miss deadlines: contracts, reports & updates on time."},
+          sec:{title:"Security", text:"Sound architecture, encryption & GDPR-compliant data processing by design."},
+          simple:{title:"Simple & credible", text:"Clear structure, plain language – real help without overkill."}
+        },
+        how:{title:"How it works", kicker:"Three steps to better compliance.",
+          s1:{title:"Create your profile", text:"Select industry, size and systems – so answers and templates fit."},
+          s2:{title:"Ask & generate", text:"The AI buddy delivers documents and checklists for your use case."},
+          s3:{title:"Enable reminders", text:"Never miss audits & deadlines – with email nudges and a dashboard."}
+        },
+        sec:{title:"Security & trust", kicker:"We rely on encryption, strict access control and GDPR-compliant processing – in the EU.",
+          e:{title:"Encryption", text:"TLS in transit, encrypted at rest."},
+          r:{title:"Roles & rights", text:"Granular access control for teams."},
+          t:{title:"Transparency", text:"Logs and export of your data at any time."}
+        },
+        pricing:{title:"Pricing", kicker:"Start simple. Scale later.", monthly:"Monthly", yearly:"Yearly", permonth:"month",
+          t1:"Starter", t2:"Pro", t3:"Business",
+          t1l1:"• Document generator (basic)", t1l2:"• AI chat (fair use)", t1l3:"• Checklists (website/shop)",
+          t2l1:"• Everything in Starter", t2l2:"• Team features", t2l3:"• Reminders & reports",
+          t3l1:"• Integrations (API)", t3l2:"• Audit exports", t3l3:"• Priority support",
+          cta1:"Get started", cta2:"Try for free", cta3:"Contact sales"
+        },
+        nl:{title:"Stay in the loop", kicker:"News about RegulusAI & beta access. Double opt-in. No spam.", cta:"Subscribe",
+            consent:"I consent to receive the newsletter and have read the", privacy:"privacy notice", read:".",
+            note:"After clicking you will receive a confirmation email (double opt-in)."},
+        faq:{title:"Frequently asked questions",
+             q1:"Is RegulusAI legally binding?", a1:"RegulusAI provides guidance, templates and structured information. For binding legal advice, please consult a lawyer.",
+             q2:"Where is data processed?", a2:"Planned processing in the EU. More details will follow in our privacy policy at launch.",
+             q3:"Who is it for?", a3:"SMBs, startups, agencies and online shops that want pragmatic compliance."
+        },
+        contact:{title:"Contact", copy:'Email us at <a href="mailto:hallo@regulus.ai">hallo@regulus.ai</a> – we’ll get back to you.'},
+        foot:{tagline:"The AI-powered compliance buddy for SMBs. Trustworthy, secure, simple.", product:"Product", legal:"Legal", follow:"Follow us", imprint:"Imprint", privacy:"Privacy", terms:"Terms"},
+        cookie:{title:"Cookies & privacy", copy:"We use cookies for essential features. See details in our", accept:"Accept", decline:"Decline"},
+        modal:{close:"Close"}
+      }
+    };
+
+    function i18nText(key){
+      const lang = document.documentElement.lang || 'de';
+      const path = key.split('.');
+      let ref = i18n[lang];
+      for(const p of path){ if(ref && typeof ref === 'object'){ ref = ref[p]; } }
+      return (typeof ref === 'string') ? ref : key;
+    }
+
+    function setLang(lang){
+      const root = document.documentElement;
+      root.lang = lang;
+      // update all [data-i18n] text nodes
+      document.querySelectorAll('[data-i18n]').forEach(el=>{
+        const key = el.getAttribute('data-i18n');
+        const txt = i18nText(key);
+        // if element contains HTML (like contact.copy), set innerHTML
+        if(/<a |<br|&nbsp;|<\/\w+>/.test(txt)){ el.innerHTML = txt; }
+        else { el.textContent = txt; }
+      });
+      // update modal close text if exists
+      document.querySelectorAll('.modal .close')?.forEach(b=> b.textContent = i18nText('modal.close'));
+      // update language buttons visual state
+      const deBtns = [document.getElementById('langDE'), document.getElementById('langDEm')].filter(Boolean);
+      const enBtns = [document.getElementById('langEN'), document.getElementById('langENm')].filter(Boolean);
+      if(lang==='de'){ deBtns.forEach(b=>b?.classList.add('active')); enBtns.forEach(b=>b?.classList.remove('active')); }
+      else { enBtns.forEach(b=>b?.classList.add('active')); deBtns.forEach(b=>b?.classList.remove('active')); }
+      localStorage.setItem('regulusai_lang', lang);
+    }
+
+    const savedLang = localStorage.getItem('regulusai_lang') || (navigator.language||'de').startsWith('de') ? 'de' : 'en';
+    setLang(savedLang);
+
+    document.getElementById('langDE')?.addEventListener('click',()=> setLang('de'));
+    document.getElementById('langEN')?.addEventListener('click',()=> setLang('en'));
+    document.getElementById('langDEm')?.addEventListener('click',()=> setLang('de'));
+    document.getElementById('langENm')?.addEventListener('click',()=> setLang('en'));
+  </script>
+</body>
+</html>
