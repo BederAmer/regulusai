@@ -15,6 +15,7 @@
   <!-- Theme / Color Scheme -->
   <meta name="theme-color" content="#0E1B4D" />
   <meta name="color-scheme" content="light" />
+  <meta name="referrer" content="strict-origin-when-cross-origin">
 
   <!-- Open Graph / Twitter -->
   <meta property="og:site_name" content="RegulusAI" />
@@ -23,10 +24,11 @@
   <meta property="og:description" content="Automatisierte DSGVO-Vorlagen, Checklisten & Erinnerungen. Einfach. Seriös. Sicher." />
   <meta property="og:type" content="website" />
   <meta property="og:locale" content="de_DE" />
+  <meta property="og:locale:alternate" content="en_US" />
   <meta property="og:image" content="https://www.regulus-a-i.com/og-image.png" />
   <meta name="twitter:card" content="summary_large_image" />
 
-  <!-- Icons (optional: Dateien ins Repo-Root legen) -->
+  <!-- Icons (lege Dateien ins Repo-Root) -->
   <link rel="icon" href="/favicon.ico" sizes="any" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
@@ -37,21 +39,24 @@
 
   <style>
     :root{
-      /* Helle, ruhige Basis + dunkle Akzente */
+      /* Ruhige, seriöse Basis + markanter Dunkelblau-Akzent */
       --bg:#FFFFFF;
       --surface:#FFFFFF;
       --ink:#0B1220;
       --muted:#667085;
-      --brand:#0E1B4D;   /* Dunkelblau */
-      --brand-2:#1C3FAA; /* Mittelblau */
+      --brand:#0E1B4D;    /* Dunkelblau (Primary) */
+      --brand-2:#1C3FAA;  /* Mittelblau (Hover/Grad.) */
       --line:#E6EAF2;
-      --shadow:0 12px 30px rgba(2, 6, 23, .06);
+      --focus:#1C3FAA33;
+      --shadow-sm:0 6px 18px rgba(2,6,23,.06);
+      --shadow:0 12px 30px rgba(2,6,23,.08);
+      --shadow-lg:0 20px 60px rgba(2,6,23,.10);
       --radius:16px;
       --radius-lg:22px;
       --space: clamp(16px, 1.6vw, 24px);
-      --section-y: clamp(88px, 9vw, 128px);
-      --container: 1280px;
-      --focus:#1C3FAA33;
+      --container: 1320px; /* etwas breiter */
+      --section-y: clamp(110px, 12vw, 160px); /* deutlich mehr Luft */
+      --gap-xl: clamp(28px, 3.6vw, 56px);
     }
     *{box-sizing:border-box}
     html{scroll-behavior:smooth}
@@ -59,8 +64,9 @@
       margin:0;
       font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
       background:
-        radial-gradient(1100px 600px at 75% -15%, rgba(28,63,170,0.06), transparent 60%),
-        radial-gradient(900px 700px at -8% 25%, rgba(14,27,77,0.05), transparent 60%),
+        /* dezentes Grid für besonderen Look */
+        radial-gradient(circle at 2px 2px, #F2F4F8 1.5px, transparent 1.6px) 0 0/22px 22px,
+        linear-gradient(180deg, rgba(28,63,170,0.03), rgba(255,255,255,0) 26%),
         var(--bg);
       color:var(--ink);
       line-height:1.65;
@@ -71,15 +77,14 @@
     .container{max-width:var(--container); margin:0 auto; padding:0 var(--space)}
     a{color:inherit; text-decoration:none}
     a:focus-visible, button:focus-visible, input:focus-visible{
-      outline:2px solid var(--brand-2); outline-offset:2px; box-shadow:0 0 0 6px var(--focus);
-      border-radius:10px;
+      outline:2px solid var(--brand-2); outline-offset:2px; box-shadow:0 0 0 6px var(--focus); border-radius:10px;
     }
-    .btn{display:inline-flex; align-items:center; gap:.6rem; font-weight:600; border-radius:12px; padding:.9rem 1.1rem; border:1px solid transparent; transition:transform .2s ease, box-shadow .2s ease, background .2s ease, color .2s ease}
+    .btn{display:inline-flex; align-items:center; gap:.6rem; font-weight:600; border-radius:12px; padding:.95rem 1.15rem; border:1px solid transparent; transition:transform .2s ease, box-shadow .2s ease, background .2s ease, color .2s ease}
     .btn:active{transform:translateY(1px)}
     .btn.primary{background:linear-gradient(135deg, var(--brand), var(--brand-2)); color:#fff; box-shadow:0 14px 30px rgba(14,27,77,.22)}
     .btn.primary:hover{box-shadow:0 20px 42px rgba(14,27,77,.28)}
     .btn.ghost{border-color:var(--line); background:#fff; color:var(--brand)}
-    .btn.ghost:hover{background:#F8FAFF}
+    .btn.ghost:hover{background:#F7FAFF}
 
     /* Skip link */
     .skip{position:absolute; left:-9999px; top:auto; width:1px; height:1px; overflow:hidden}
@@ -89,7 +94,7 @@
     header{
       position:sticky; top:0; z-index:1000;
       backdrop-filter:saturate(140%) blur(10px);
-      background:rgba(255,255,255,.85);
+      background:rgba(255,255,255,.9);
       border-bottom:1px solid var(--line);
       transition: box-shadow .2s ease, background .2s ease, transform .2s ease;
     }
@@ -120,26 +125,27 @@
     .mobile{display:none; padding:12px 0; border-top:1px solid var(--line); background:#fff}
     .mobile a{display:block; padding:.75rem 0}
 
-    /* Sections */
+    /* Allgemeine Sektionen */
     section{padding:var(--section-y) 0}
     section + section{border-top:1px solid var(--line); background:linear-gradient(180deg, rgba(14,27,77,0.02), rgba(255,255,255,0) 26%)}
-    .section-title{font-size: clamp(1.8rem, 2.8vw, 2.2rem); margin:0 0 .7rem; letter-spacing:-.02em; color:var(--ink)}
-    .kicker{color:var(--muted); margin:0 auto 1.6rem; max-width:72ch}
+    .section-head{display:flex; flex-direction:column; gap:.6rem; margin-bottom:var(--gap-xl)}
+    .section-title{font-size: clamp(2rem, 3.2vw, 2.4rem); margin:0; letter-spacing:-.02em; color:var(--ink)}
+    .kicker{color:var(--muted); margin:0; max-width:72ch}
 
     /* Hero */
-    .hero{position:relative; padding:calc(var(--section-y) + 12px) 0 var(--section-y)}
-    .hero-grid{display:grid; grid-template-columns: 1.15fr 1fr; gap:2.6rem; align-items:center}
+    .hero{position:relative; padding:calc(var(--section-y) + 8px) 0 var(--section-y)}
+    .hero-grid{display:grid; grid-template-columns: 1.05fr 1fr; gap:clamp(24px, 4.8vw, 64px); align-items:center}
     .eyebrow{display:inline-flex; align-items:center; gap:.5rem; font-size:.86rem; color:var(--muted); border:1px solid var(--line); padding:.35rem .6rem; border-radius:999px; background:#fff}
-    h1{font-size: clamp(2.2rem, 4.6vw, 3.4rem); line-height:1.08; margin:.7rem 0 1rem; letter-spacing:-0.02em}
-    .lead{font-size: clamp(1.04rem, 1.6vw, 1.18rem); color:#475569; max-width: 62ch}
+    h1{font-size: clamp(2.4rem, 5vw, 3.6rem); line-height:1.05; margin:.7rem 0 1rem; letter-spacing:-0.02em}
+    .lead{font-size: clamp(1.05rem, 1.6vw, 1.18rem); color:#475569; max-width: 64ch}
     .cta{display:flex; gap:.8rem; flex-wrap:wrap; margin-top:1.2rem}
 
-    /* Mock panel */
+    /* Produkt-Panel */
     .panel{
       position:relative; background:#fff; border:1px solid var(--line); border-radius:var(--radius-lg);
       box-shadow:var(--shadow); overflow:hidden; transform-style:preserve-3d;
     }
-    .panel:hover{transform:perspective(1000px) rotateX(1deg) rotateY(-1.5deg)}
+    .panel:hover{transform:perspective(1000px) rotateX(1deg) rotateY(-1.2deg)}
     .panel::before{
       content:""; position:absolute; inset:-1px; border-radius:calc(var(--radius-lg) + 1px); padding:1px;
       background:linear-gradient(135deg, rgba(28,63,170,.45), rgba(255,255,255,.5), rgba(14,27,77,.35));
@@ -150,66 +156,81 @@
     .dots{display:flex; gap:.4rem}
     .dot{width:10px; height:10px; border-radius:50%; background:#E2E8F0; box-shadow:inset 0 -1px 0 rgba(0,0,0,.06)}
     .panel-body{padding:1rem;}
-    .chat{display:flex; flex-direction:column; gap:.8rem; max-height:380px; overflow:auto}
+    .chat{display:flex; flex-direction:column; gap:.8rem; max-height:420px; overflow:auto}
     .msg{display:flex; gap:.6rem; align-items:flex-start}
     .avatar{width:28px;height:28px;border-radius:50%; background:linear-gradient(135deg, var(--brand-2), var(--brand))}
-    .bubble{flex:1; background:#F8FAFF; border:1px solid var(--line); padding:.8rem .9rem; border-radius:14px}
+    .bubble{flex:1; background:#F8FAFF; border:1px solid var(--line); padding:.85rem .95rem; border-radius:14px}
 
-    /* Grids */
-    .grid{display:grid; grid-template-columns:repeat(3,1fr); gap:1.4rem}
+    /* Features / Cards */
+    .grid{display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(16px, 1.8vw, 20px)}
     .card{
-      background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:1.1rem;
-      box-shadow:0 6px 18px rgba(14,27,77,.05);
+      background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:1.15rem 1.2rem;
+      box-shadow:var(--shadow-sm);
       transition:transform .18s ease, box-shadow .18s ease, outline-color .18s ease, background .18s ease
     }
-    .card:hover{transform:translateY(-3px); box-shadow:0 14px 32px rgba(14,27,77,.12); outline:1px solid rgba(28,63,170,.35)}
-    .icon{width:28px;height:28px; color:var(--brand)}
+    .card:hover{transform:translateY(-3px); box-shadow:var(--shadow); outline:1px solid rgba(28,63,170,.32)}
+    .icon{width:28px;height:28px; color:var(--brand); flex-shrink:0}
 
     /* Steps */
-    .steps{display:grid; grid-template-columns:repeat(3,1fr); gap:1.4rem}
-    .step{position:relative; padding:1.1rem; border-radius:var(--radius); border:1px solid var(--line); background:linear-gradient(180deg, #fff, #FBFCFF)}
+    .steps{display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(16px,1.8vw,20px)}
+    .step{position:relative; padding:1.15rem; border-radius:var(--radius); border:1px solid var(--line); background:linear-gradient(180deg, #fff, #FBFCFF); box-shadow:var(--shadow-sm)}
     .step::before{
       content:attr(data-step); position:absolute; top:-12px; left:12px;
       background:linear-gradient(135deg, var(--brand), var(--brand-2)); color:#fff; font-weight:700; font-size:.8rem; padding:.25rem .55rem; border-radius:999px; box-shadow:0 6px 14px rgba(14,27,77,.25)
     }
 
     /* Security */
-    .sec-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:1.4rem}
+    .sec-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(16px,1.8vw,20px)}
 
     /* Pricing */
-    .pricing{display:grid; grid-template-columns:repeat(3,1fr); gap:1.4rem; align-items:stretch}
-    .price-toggle{display:flex; align-items:center; gap:.6rem; justify-content:center; margin:.8rem 0 1.4rem}
+    .pricing-wrap{display:flex; flex-direction:column; gap:1rem}
+    .price-toggle{display:flex; align-items:center; gap:.6rem; justify-content:center; margin:.2rem 0 1.2rem}
     .switch{position:relative; width:56px; height:30px; background:#F2F4F8; border-radius:999px; border:1px solid var(--line)}
     .switch input{opacity:0; width:0; height:0}
     .thumb{position:absolute; top:3px; left:3px; width:24px; height:24px; border-radius:50%; background:linear-gradient(135deg, var(--brand), var(--brand-2)); transition:left .2s ease}
     .switch input:checked + .thumb{left:29px}
-
-    .price-card{position:relative; padding:1.2rem; background:#fff; border:1px solid var(--line); border-radius:var(--radius); display:flex; flex-direction:column; box-shadow:var(--shadow)}
-    .price-card.reco{outline:2px solid rgba(28,63,170,.6)}
-    .price{font-size:2.2rem; font-weight:800; color:var(--brand)}
+    .pricing{display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(16px,1.8vw,20px); align-items:stretch}
+    .price-card{position:relative; padding:1.25rem; background:#fff; border:1px solid var(--line); border-radius:var(--radius); display:flex; flex-direction:column; box-shadow:var(--shadow)}
+    .price-card.reco{outline:2px solid rgba(28,63,170,.55)}
+    .price{font-size:2.25rem; font-weight:800; color:var(--brand)}
     .small{color:var(--muted); font-size:.96rem}
     ul.clean{list-style:none; padding:0; margin:0}
     ul.clean li{display:flex; gap:.6rem; margin:.55rem 0}
     .grow{margin-top:auto}
 
-    /* Newsletter */
-    .nl{
-      display:grid; grid-template-columns:1fr auto; gap: .6rem;
-      background:linear-gradient(135deg, #F7FAFF, #FFFFFF);
-      border:1px solid var(--line); padding:1rem; border-radius:var(--radius)
+    /* Newsletter (breit und professionell) */
+    .nl-wrap{max-width:none}
+    .nl-pro{
+      display:grid; grid-template-columns: 1.25fr .9fr; gap:clamp(20px, 3vw, 44px);
+      background:linear-gradient(180deg, #F7FAFF, #FFFFFF);
+      border:1px solid var(--line); border-radius:22px; padding:clamp(18px, 3vw, 28px);
+      box-shadow:var(--shadow-lg);
+      align-items:center;
     }
-    .nl input{
-      padding:.9rem 1rem; border-radius:12px; border:1px solid var(--line); background:#fff; color:var(--ink); outline:none; width:100%
+    .nl-badges{display:flex; gap:10px; flex-wrap:wrap; margin:.3rem 0 .4rem}
+    .badge{border:1px solid var(--line); background:#fff; border-radius:999px; padding:.35rem .6rem; font-weight:600; color:#334155; font-size:.9rem}
+    .nl-form{display:grid; grid-template-columns: 1fr auto; gap:.7rem; align-items:start}
+    .nl-form input{
+      padding:1rem 1rem; border-radius:12px; border:1px solid var(--line); background:#fff; color:var(--ink); outline:none; width:100%
     }
+    .nl-note{margin-top:.3rem; color:var(--muted); font-size:.92rem}
+    .nl-side{
+      background:linear-gradient(135deg, #EEF3FF, #FFFFFF);
+      border:1px dashed #D8E2FF; border-radius:18px; padding:clamp(14px, 2.2vw, 22px);
+    }
+    .nl-side h4{margin:0 0 .4rem 0; font-size:1.05rem}
+    .nl-list{list-style:none; padding:0; margin:.4rem 0 0 0; color:#475569}
+    .nl-list li{margin:.3rem 0; display:flex; gap:.6rem; align-items:flex-start}
+    .nl-list li::before{content:"✓"; color:var(--brand); font-weight:800; line-height:1.2}
 
     /* FAQ */
-    .faq{max-width:900px}
-    details{background:#fff; border:1px solid var(--line); padding: .9rem 1rem; border-radius: 14px; box-shadow:0 6px 18px rgba(14,27,77,.05)}
-    details+details{margin-top:.7rem}
+    .faq{max-width:980px}
+    details{background:#fff; border:1px solid var(--line); padding:.95rem 1rem; border-radius: 14px; box-shadow:var(--shadow-sm)}
+    details+details{margin-top:.8rem}
     summary{cursor:pointer; font-weight:600; color:var(--ink)}
 
     /* Footer */
-    footer{border-top:1px solid var(--line); padding:44px 0; background:linear-gradient(to top, #F7F9FE, #FFFFFF)}
+    footer{border-top:1px solid var(--line); padding:56px 0; background:linear-gradient(to top, #F7F9FE, #FFFFFF)}
     .foot{display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:1.2rem}
     .foot a{color:var(--muted)}
 
@@ -218,29 +239,31 @@
     [data-reveal].visible{opacity:1; transform:none}
 
     /* Back to top */
-    .to-top{position:fixed; right:18px; bottom:18px; padding:.7rem .8rem; border-radius:12px; background:#fff; border:1px solid var(--line); display:none; z-index:50; box-shadow:var(--shadow)}
+    .to-top{position:fixed; right:18px; bottom:18px; padding:.75rem .85rem; border-radius:12px; background:#fff; border:1px solid var(--line); display:none; z-index:50; box-shadow:var(--shadow); color:var(--brand); font-weight:700}
 
     /* Cookie bar */
-    .cookie{
-      position:fixed; left:16px; right:16px; bottom:16px; background:#fff; border:1px solid var(--line);
-      border-radius:16px; padding:1rem; box-shadow:var(--shadow); display:none
-    }
+    .cookie{position:fixed; left:16px; right:16px; bottom:16px; background:#fff; border:1px solid var(--line);
+      border-radius:16px; padding:1rem; box-shadow:var(--shadow); display:none}
 
-    /* Shine badge */
+    /* "Shine" Effekt */
     .shine{position:relative}
-    .shine::after{content:""; position:absolute; inset:0; background:linear-gradient(120deg, transparent 0%, rgba(255,255,255,.6) 40%, transparent 80%); transform:translateX(-120%); animation:shine 4s infinite ease}
+    .shine::after{content:""; position:absolute; inset:0; background:linear-gradient(120deg, transparent 0%, rgba(255,255,255,.7) 40%, transparent 78%); transform:translateX(-120%); animation:shine 4s infinite ease}
     @keyframes shine{to{transform:translateX(120%)}}
 
     /* Responsive */
-    @media (max-width: 1100px){
+    @media (max-width: 1200px){
+      .hero-grid{grid-template-columns:1fr}
+    }
+    @media (max-width: 1024px){
       .grid{grid-template-columns:1fr 1fr}
       .pricing{grid-template-columns:1fr}
       .sec-grid{grid-template-columns:1fr 1fr}
-      .hero-grid{grid-template-columns:1fr}
       .foot{grid-template-columns:1fr 1fr}
+      .nl-pro{grid-template-columns:1fr}
     }
-    @media (max-width: 640px){
+    @media (max-width: 620px){
       .grid,.sec-grid{grid-template-columns:1fr}
+      .nl-form{grid-template-columns:1fr}
     }
     @media (prefers-reduced-motion: reduce){
       *{animation:none !important; transition:none !important}
@@ -261,7 +284,19 @@
   }
   </script>
 
-  <!-- Plausible (optional, privacy-friendly). Domain anpassen falls nötig -->
+  <!-- Optional: Organization Markup -->
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"Organization",
+    "name":"RegulusAI",
+    "url":"https://www.regulus-a-i.com/",
+    "logo":"https://www.regulus-a-i.com/apple-touch-icon.png",
+    "sameAs":[]
+  }
+  </script>
+
+  <!-- Plausible (privacy-friendly). Domain anpassen falls nötig -->
   <script defer data-domain="www.regulus-a-i.com" src="https://plausible.io/js/script.js"></script>
 </head>
 <body>
@@ -277,8 +312,9 @@
 
       <nav class="navlinks" aria-label="Primäre Navigation">
         <a href="#features" data-i18n="nav.features">Funktionen</a>
-        <a href="#pricing" data-i18n="nav.pricing">Preise</a>
+        <a href="#how" data-i18n="nav.how">Ablauf</a>
         <a href="#security" data-i18n="nav.security">Sicherheit</a>
+        <a href="#pricing" data-i18n="nav.pricing">Preise</a>
         <a href="#faq" data-i18n="nav.faq">FAQ</a>
         <a href="#newsletter" data-i18n="nav.newsletter">Newsletter</a>
 
@@ -295,8 +331,9 @@
     </div>
     <div class="container mobile" id="mobileMenu" hidden>
       <a href="#features" data-i18n="nav.features">Funktionen</a>
-      <a href="#pricing" data-i18n="nav.pricing">Preise</a>
+      <a href="#how" data-i18n="nav.how">Ablauf</a>
       <a href="#security" data-i18n="nav.security">Sicherheit</a>
+      <a href="#pricing" data-i18n="nav.pricing">Preise</a>
       <a href="#faq" data-i18n="nav.faq">FAQ</a>
       <a href="#newsletter" data-i18n="nav.newsletter">Newsletter</a>
       <div style="display:flex; align-items:center; gap:.6rem; margin-top:.6rem">
@@ -324,7 +361,7 @@
           </p>
           <div class="cta">
             <a class="btn primary magnet" href="#pricing" data-i18n="hero.cta1">Preise ansehen</a>
-            <a class="btn.ghost btn ghost" href="#features" data-i18n="hero.cta2">Funktionen entdecken</a>
+            <a class="btn ghost" href="#features" data-i18n="hero.cta2">Funktionen entdecken</a>
           </div>
         </div>
         <div>
@@ -354,52 +391,56 @@
               </div>
             </div>
           </div>
+          <p class="small" style="color:#6b7280; margin-top:.6rem">* Beispielhafte Antworten. Keine Rechtsberatung.</p>
         </div>
       </div>
     </section>
 
     <!-- Features -->
     <section id="features" class="container" data-reveal>
-      <h2 class="section-title" data-i18n="features.title">Funktionen, die wirklich helfen</h2>
-      <p class="kicker" data-i18n="features.kicker">Konzentriere dich auf dein Business – RegulusAI kümmert sich um Vorlagen, Checklisten und Erinnerungen.</p>
+      <div class="section-head">
+        <h2 class="section-title" data-i18n="features.title">Funktionen, die wirklich helfen</h2>
+        <p class="kicker" data-i18n="features.kicker">Konzentriere dich auf dein Business – RegulusAI kümmert sich um Vorlagen, Checklisten und Erinnerungen.</p>
+      </div>
+
       <div class="grid">
         <article class="card">
-          <h3>
+          <h3 style="display:flex; align-items:center; gap:.6rem;">
             <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M4 12h10M4 17h7" stroke="currentColor" stroke-width="1.5"/></svg>
             <span data-i18n="feat.doc.title">Dokument-Generator</span>
           </h3>
           <p data-i18n="feat.doc.text">Erzeuge DSGVO-Dokumente wie Datenschutzerklärung, Impressum und AV-Vertrag in Minuten.</p>
         </article>
         <article class="card">
-          <h3>
+          <h3 style="display:flex; align-items:center; gap:.6rem;">
             <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3l7 4-7 4-7-4 7-4zm-7 8l7 4 7-4" stroke="currentColor" stroke-width="1.5"/></svg>
             <span data-i18n="feat.chat.title">KI-Chat</span>
           </h3>
           <p data-i18n="feat.chat.text">Frag in Klartext. Erhalte präzise, praxisnahe Antworten – ohne Juristen-Deutsch.</p>
         </article>
         <article class="card">
-          <h3>
+          <h3 style="display:flex; align-items:center; gap:.6rem;">
             <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12l4 4L19 6" stroke="currentColor" stroke-width="1.5"/></svg>
             <span data-i18n="feat.check.title">Checklisten</span>
           </h3>
           <p data-i18n="feat.check.text">Interaktive To-Dos für Website, Shop & Agentur – mit Fortschrittsanzeige.</p>
         </article>
         <article class="card">
-          <h3>
+          <h3 style="display:flex; align-items:center; gap:.6rem;">
             <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 8v5l3 2" stroke="currentColor" stroke-width="1.5"/></svg>
             <span data-i18n="feat.remind.title">Erinnerungen</span>
           </h3>
           <p data-i18n="feat.remind.text">Fristen im Blick: Ablauf von Verträgen, Reports & Aktualisierungen rechtzeitig erledigen.</p>
         </article>
         <article class="card">
-          <h3>
+          <h3 style="display:flex; align-items:center; gap:.6rem;">
             <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3a9 9 0 100 18 9 9 0 000-18zm-2 9l2 2 4-4" stroke="currentColor" stroke-width="1.5"/></svg>
             <span data-i18n="feat.sec.title">Sicherheit</span>
           </h3>
           <p data-i18n="feat.sec.text">Seriöse Architektur, Verschlüsselung & DSGVO-konforme Datenverarbeitung als Prinzip.</p>
         </article>
         <article class="card">
-          <h3>
+          <h3 style="display:flex; align-items:center; gap:.6rem;">
             <svg class="icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 6h18M3 12h12M3 18h8" stroke="currentColor" stroke-width="1.5"/></svg>
             <span data-i18n="feat.simple.title">Einfach & seriös</span>
           </h3>
@@ -410,8 +451,10 @@
 
     <!-- How it works -->
     <section class="container" id="how" data-reveal>
-      <h2 class="section-title" data-i18n="how.title">So funktioniert’s</h2>
-      <p class="kicker" data-i18n="how.kicker">In drei Schritten zu mehr Compliance-Sicherheit.</p>
+      <div class="section-head">
+        <h2 class="section-title" data-i18n="how.title">So funktioniert’s</h2>
+        <p class="kicker" data-i18n="how.kicker">In drei Schritten zu mehr Compliance-Sicherheit.</p>
+      </div>
       <div class="steps">
         <div class="step" data-step="1">
           <h3 data-i18n="how.s1.title">Profil anlegen</h3>
@@ -430,8 +473,10 @@
 
     <!-- Security -->
     <section id="security" class="container" data-reveal>
-      <h2 class="section-title" data-i18n="sec.title">Sicherheit & Vertrauen</h2>
-      <p class="kicker" data-i18n="sec.kicker">Wir setzen auf Verschlüsselung, strikte Zugriffskontrollen und DSGVO-konforme Verarbeitung – in der EU.</p>
+      <div class="section-head">
+        <h2 class="section-title" data-i18n="sec.title">Sicherheit & Vertrauen</h2>
+        <p class="kicker" data-i18n="sec.kicker">Wir setzen auf Verschlüsselung, strikte Zugriffskontrollen und DSGVO-konforme Verarbeitung – in der EU.</p>
+      </div>
       <div class="sec-grid">
         <div class="card"><strong data-i18n="sec.e.title">Verschlüsselung</strong><br/><span data-i18n="sec.e.text">TLS in Transit, ruhende Daten verschlüsselt.</span></div>
         <div class="card"><strong data-i18n="sec.r.title">Rollen & Rechte</strong><br/><span data-i18n="sec.r.text">Feingranulare Zugriffssteuerung für Teams.</span></div>
@@ -441,78 +486,115 @@
 
     <!-- Pricing -->
     <section id="pricing" class="container" data-reveal>
-      <h2 class="section-title" data-i18n="pricing.title">Preise</h2>
-      <p class="kicker" data-i18n="pricing.kicker">Einfach starten. Später skalieren.</p>
-      <div class="price-toggle">
-        <span class="small" data-i18n="pricing.monthly">Monatlich</span>
-        <label class="switch">
-          <input type="checkbox" id="billingToggle" aria-label="Jährliche Abrechnung umschalten">
-          <span class="thumb" aria-hidden="true"></span>
-        </label>
-        <span class="small"><span data-i18n="pricing.yearly">Jährlich</span> <span style="color:var(--brand); font-weight:700">–15%</span></span>
+      <div class="section-head">
+        <h2 class="section-title" data-i18n="pricing.title">Preise</h2>
+        <p class="kicker" data-i18n="pricing.kicker">Einfach starten. Später skalieren.</p>
       </div>
-      <div class="pricing">
-        <div class="price-card">
-          <h3 data-i18n="pricing.t1">Starter</h3>
-          <p class="price"><span data-price data-month="29" data-year="25">€29</span><span class="small"> / <span data-i18n="pricing.permonth">Monat</span></span></p>
-          <ul class="clean small">
-            <li data-i18n="pricing.t1.l1">• Dokument-Generator (Basis)</li>
-            <li data-i18n="pricing.t1.l2">• KI-Chat (Fair-Use)</li>
-            <li data-i18n="pricing.t1.l3">• Checklisten (Website/Shop)</li>
-          </ul>
-          <div class="grow"></div>
-          <div style="margin-top: .8rem"><a class="btn ghost" href="#contact" data-i18n="pricing.cta1">Loslegen</a></div>
+
+      <div class="pricing-wrap">
+        <div class="price-toggle">
+          <span class="small" data-i18n="pricing.monthly">Monatlich</span>
+          <label class="switch">
+            <input type="checkbox" id="billingToggle" aria-label="Jährliche Abrechnung umschalten">
+            <span class="thumb" aria-hidden="true"></span>
+          </label>
+          <span class="small"><span data-i18n="pricing.yearly">Jährlich</span> <span style="color:var(--brand); font-weight:700">–15%</span></span>
         </div>
-        <div class="price-card reco">
-          <h3 data-i18n="pricing.t2">Pro</h3>
-          <p class="price"><span data-price data-month="99" data-year="84">€99</span><span class="small"> / <span data-i18n="pricing.permonth">Monat</span></span></p>
-          <ul class="clean small">
-            <li data-i18n="pricing.t2.l1">• Alles aus Starter</li>
-            <li data-i18n="pricing.t2.l2">• Team-Funktion</li>
-            <li data-i18n="pricing.t2.l3">• Erinnerungen & Reports</li>
-          </ul>
-          <div class="grow"></div>
-          <div style="margin-top: .8rem"><a class="btn primary magnet" href="#contact" data-i18n="pricing.cta2">Kostenlos testen</a></div>
-        </div>
-        <div class="price-card">
-          <h3 data-i18n="pricing.t3">Business</h3>
-          <p class="price"><span data-price data-month="299" data-year="254">€299</span><span class="small"> / <span data-i18n="pricing.permonth">Monat</span></span></p>
-          <ul class="clean small">
-            <li data-i18n="pricing.t3.l1">• Integrationen (API)</li>
-            <li data-i18n="pricing.t3.l2">• Audit-Exports</li>
-            <li data-i18n="pricing.t3.l3">• Priorisierter Support</li>
-          </ul>
-          <div class="grow"></div>
-          <div style="margin-top: .8rem"><a class="btn ghost" href="#contact" data-i18n="pricing.cta3">Kontakt aufnehmen</a></div>
+
+        <div class="pricing">
+          <div class="price-card">
+            <h3 data-i18n="pricing.t1">Starter</h3>
+            <p class="price"><span data-price data-month="29" data-year="25">€29</span><span class="small"> / <span data-i18n="pricing.permonth">Monat</span></span></p>
+            <ul class="clean small">
+              <li data-i18n="pricing.t1.l1">• Dokument-Generator (Basis)</li>
+              <li data-i18n="pricing.t1.l2">• KI-Chat (Fair-Use)</li>
+              <li data-i18n="pricing.t1.l3">• Checklisten (Website/Shop)</li>
+            </ul>
+            <div class="grow"></div>
+            <div style="margin-top:.9rem"><a class="btn ghost" href="#contact" data-i18n="pricing.cta1">Loslegen</a></div>
+          </div>
+
+          <div class="price-card reco">
+            <h3 data-i18n="pricing.t2">Pro</h3>
+            <p class="price"><span data-price data-month="99" data-year="84">€99</span><span class="small"> / <span data-i18n="pricing.permonth">Monat</span></span></p>
+            <ul class="clean small">
+              <li data-i18n="pricing.t2.l1">• Alles aus Starter</li>
+              <li data-i18n="pricing.t2.l2">• Team-Funktion</li>
+              <li data-i18n="pricing.t2.l3">• Erinnerungen & Reports</li>
+            </ul>
+            <div class="grow"></div>
+            <div style="margin-top:.9rem"><a class="btn primary magnet" href="#contact" data-i18n="pricing.cta2">Kostenlos testen</a></div>
+          </div>
+
+          <div class="price-card">
+            <h3 data-i18n="pricing.t3">Business</h3>
+            <p class="price"><span data-price data-month="299" data-year="254">€299</span><span class="small"> / <span data-i18n="pricing.permonth">Monat</span></span></p>
+            <ul class="clean small">
+              <li data-i18n="pricing.t3.l1">• Integrationen (API)</li>
+              <li data-i18n="pricing.t3.l2">• Audit-Exports</li>
+              <li data-i18n="pricing.t3.l3">• Priorisierter Support</li>
+            </ul>
+            <div class="grow"></div>
+            <div style="margin-top:.9rem"><a class="btn ghost" href="#contact" data-i18n="pricing.cta3">Kontakt aufnehmen</a></div>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- Newsletter -->
-    <section id="newsletter" class="container" data-reveal>
-      <h2 class="section-title" data-i18n="nl.title">Bleib auf dem Laufenden</h2>
-      <p class="kicker" data-i18n="nl.kicker">News zu RegulusAI & Beta-Zugang. Double-Opt-In. Kein Spam.</p>
+    <!-- Newsletter (breit / Pro) -->
+    <section id="newsletter" class="container nl-wrap" data-reveal>
+      <div class="section-head">
+        <h2 class="section-title" data-i18n="nl.title">Bleib auf dem Laufenden</h2>
+        <p class="kicker" data-i18n="nl.kicker">News zu RegulusAI & Beta-Zugang. Double-Opt-In. Kein Spam.</p>
+      </div>
 
-      <!-- Mailchimp: ACTION-URL & Hidden Names (u,id,f_id,b_u_id) ersetzen -->
-      <form class="nl" id="mc-embedded-subscribe-form" method="post" target="_blank"
-            action="https://YOUR_DC.list-manage.com/subscribe/post?u=YOUR_U&id=YOUR_ID&f_id=YOUR_FID" novalidate>
-        <input aria-label="E-Mail" type="email" name="EMAIL" id="mce-EMAIL" placeholder="dein@mail.com" required>
-        <button class="btn primary magnet" type="submit" data-i18n="nl.cta">Anmelden</button>
-        <label class="small" style="grid-column:1/-1; display:flex; gap:.5rem; align-items:flex-start">
-          <input type="checkbox" required style="margin-top:.35rem">
-          <span data-i18n="nl.consent">Ich willige in den Erhalt des Newsletters ein und habe die</span> <a href="#" data-modal="datenschutz" data-i18n="nl.privacy">Datenschutz-Hinweise</a> <span data-i18n="nl.read">gelesen.</span>
-        </label>
-        <div style="position:absolute; left:-5000px" aria-hidden="true">
-          <input type="text" name="b_YOUR_U_YOUR_ID" tabindex="-1" value="">
+      <div class="nl-pro">
+        <div>
+          <div class="nl-badges">
+            <span class="badge">GDPR-Friendly</span>
+            <span class="badge">EU-Hosting (geplant)</span>
+            <span class="badge">Beta Early Access</span>
+          </div>
+          <!-- Mailchimp: ACTION-URL & Hidden Names (u,id,f_id,b_u_id) ersetzen -->
+          <form class="nl-form" id="mc-embedded-subscribe-form" method="post" target="_blank"
+                action="https://YOUR_DC.list-manage.com/subscribe/post?u=YOUR_U&id=YOUR_ID&f_id=YOUR_FID" novalidate>
+            <input aria-label="E-Mail" type="email" name="EMAIL" id="mce-EMAIL" placeholder="dein@mail.com" required>
+            <button class="btn primary magnet" type="submit" data-i18n="nl.cta">Anmelden</button>
+
+            <label class="small" style="grid-column:1/-1; display:flex; gap:.5rem; align-items:flex-start; margin-top:.1rem">
+              <input type="checkbox" required style="margin-top:.35rem">
+              <span>
+                <span data-i18n="nl.consent">Ich willige in den Erhalt des Newsletters ein und habe die</span>
+                <a href="#" data-modal="datenschutz" data-i18n="nl.privacy">Datenschutz-Hinweise</a>
+                <span data-i18n="nl.read">gelesen.</span>
+              </span>
+            </label>
+
+            <!-- Honeypot gegen Bots -->
+            <div style="position:absolute; left:-5000px" aria-hidden="true">
+              <input type="text" name="b_YOUR_U_YOUR_ID" tabindex="-1" value="">
+            </div>
+
+            <small class="nl-note" data-i18n="nl.note" style="grid-column:1/-1">Nach dem Klick erhältst du eine E-Mail zur Bestätigung (Double-Opt-In).</small>
+          </form>
         </div>
-        <small class="small" style="grid-column:1/-1" data-i18n="nl.note">Nach dem Klick erhältst du eine E-Mail zur Bestätigung (Double-Opt-In).</small>
-      </form>
+        <aside class="nl-side" aria-label="Was du bekommst">
+          <h4 data-i18n="nl.side.title">Was du bekommst</h4>
+          <ul class="nl-list">
+            <li data-i18n="nl.side.l1">Praxis-Templates (AGB, DSGVO, AV-Vertrag)</li>
+            <li data-i18n="nl.side.l2">Checklisten & Fristen-Reminder</li>
+            <li data-i18n="nl.side.l3">Einladungen zu Beta-Features</li>
+          </ul>
+        </aside>
+      </div>
       <noscript><p class="small">Bitte aktiviere JavaScript, um das Newsletter-Formular zu nutzen.</p></noscript>
     </section>
 
     <!-- FAQ -->
     <section id="faq" class="container faq" data-reveal>
-      <h2 class="section-title" data-i18n="faq.title">Häufige Fragen</h2>
+      <div class="section-head">
+        <h2 class="section-title" data-i18n="faq.title">Häufige Fragen</h2>
+      </div>
       <details>
         <summary data-i18n="faq.q1">Ist RegulusAI rechtlich verbindlich?</summary>
         <p data-i18n="faq.a1">RegulusAI liefert Hilfestellungen, Vorlagen und strukturierte Informationen. Für verbindliche Rechtsberatung wende dich bitte an eine/n Anwältin/Anwalt.</p>
@@ -529,8 +611,10 @@
 
     <!-- Contact -->
     <section id="contact" class="container" data-reveal>
-      <h2 class="section-title" data-i18n="contact.title">Kontakt</h2>
-      <p class="kicker" data-i18n="contact.copy">Schreib uns an <a href="mailto:hallo@regulus.ai">hallo@regulus.ai</a> – wir melden uns.</p>
+      <div class="section-head">
+        <h2 class="section-title" data-i18n="contact.title">Kontakt</h2>
+        <p class="kicker" data-i18n="contact.copy">Schreib uns an <a href="mailto:hallo@regulus.ai">hallo@regulus.ai</a> – wir melden uns.</p>
+      </div>
     </section>
   </main>
 
@@ -545,6 +629,7 @@
         <strong data-i18n="foot.product">Produkt</strong>
         <ul class="clean small" style="margin-top:.4rem">
           <li><a href="#features" data-i18n="nav.features">Funktionen</a></li>
+          <li><a href="#how" data-i18n="nav.how">Ablauf</a></li>
           <li><a href="#pricing" data-i18n="nav.pricing">Preise</a></li>
           <li><a href="#faq" data-i18n="nav.faq">FAQ</a></li>
         </ul>
@@ -639,7 +724,10 @@
     const toggle=document.getElementById('billingToggle');
     const prices=[...document.querySelectorAll('[data-price]')];
     function setBilling(yearly){
-      prices.forEach(p=>{ const m=p.getAttribute('data-month'); const y=p.getAttribute('data-year'); p.textContent = `€${ yearly? y : m }`; });
+      prices.forEach(p=>{
+        const m=p.getAttribute('data-month'); const y=p.getAttribute('data-year');
+        p.textContent = `€${ yearly? y : m }`;
+      });
     }
     toggle?.addEventListener('change', (e)=> setBilling(e.target.checked));
 
@@ -649,7 +737,13 @@
     const spy=new IntersectionObserver((entries)=>{
       entries.forEach(ent=>{
         const i=sections.indexOf(ent.target);
-        if(i>-1){ const link=links[i]; if(ent.isIntersecting){ links.forEach(l=>l.classList.remove('active')); link.classList.add('active'); } }
+        if(i>-1){
+          const link=links[i];
+          if(ent.isIntersecting){
+            links.forEach(l=>l.classList.remove('active'));
+            link.classList.add('active');
+          }
+        }
       });
     },{rootMargin:'-40% 0px -55% 0px', threshold:0});
     sections.forEach(s=> spy.observe(s));
@@ -699,7 +793,7 @@
     const i18n = {
       de: {
         skip: "Zum Inhalt springen",
-        nav: {features:"Funktionen", pricing:"Preise", security:"Sicherheit", faq:"FAQ", newsletter:"Newsletter", cta:"Kostenlos starten"},
+        nav: {features:"Funktionen", how:"Ablauf", pricing:"Preise", security:"Sicherheit", faq:"FAQ", newsletter:"Newsletter", cta:"Kostenlos starten"},
         hero: {
           eyebrow:"Dein KI-Compliance-Assistent",
           title:"RegulusAI – Compliance, einfach erklärt und automatisiert.",
@@ -738,7 +832,8 @@
         },
         nl:{title:"Bleib auf dem Laufenden", kicker:"News zu RegulusAI & Beta-Zugang. Double-Opt-In. Kein Spam.", cta:"Anmelden",
             consent:"Ich willige in den Erhalt des Newsletters ein und habe die", privacy:"Datenschutz-Hinweise", read:"gelesen.",
-            note:"Nach dem Klick erhältst du eine E-Mail zur Bestätigung (Double-Opt-In)."},
+            note:"Nach dem Klick erhältst du eine E-Mail zur Bestätigung (Double-Opt-In).",
+            side:{title:"Was du bekommst", l1:"Praxis-Templates (AGB, DSGVO, AV-Vertrag)", l2:"Checklisten & Fristen-Reminder", l3:"Einladungen zu Beta-Features"}},
         faq:{title:"Häufige Fragen",
              q1:"Ist RegulusAI rechtlich verbindlich?", a1:"RegulusAI liefert Hilfestellungen, Vorlagen und strukturierte Informationen. Für verbindliche Rechtsberatung wende dich bitte an eine/n Anwältin/Anwalt.",
              q2:"Wo werden Daten verarbeitet?", a2:"Geplante Verarbeitung in der EU. Genauere Angaben folgen zum Produktstart in unserer Datenschutz-Erklärung.",
@@ -751,7 +846,7 @@
       },
       en: {
         skip:"Skip to content",
-        nav:{features:"Features", pricing:"Pricing", security:"Security", faq:"FAQ", newsletter:"Newsletter", cta:"Start for free"},
+        nav:{features:"Features", how:"How it works", pricing:"Pricing", security:"Security", faq:"FAQ", newsletter:"Newsletter", cta:"Start for free"},
         hero:{
           eyebrow:"Your AI compliance assistant",
           title:"RegulusAI – Compliance made simple and automated.",
@@ -790,3 +885,58 @@
         },
         nl:{title:"Stay in the loop", kicker:"News about RegulusAI & beta access. Double opt-in. No spam.", cta:"Subscribe",
             consent:"I consent to receive the newsletter and have read the", privacy:"privacy notice", read:".",
+            note:"After clicking you will receive a confirmation email (double opt-in).",
+            side:{title:"What you get", l1:"Practical templates (ToS, GDPR, DPA)", l2:"Checklists & deadline reminders", l3:"Invites to beta features"}},
+        faq:{title:"Frequently asked questions",
+             q1:"Is RegulusAI legally binding?", a1:"RegulusAI provides guidance, templates and structured information. For binding legal advice, please consult a lawyer.",
+             q2:"Where is data processed?", a2:"Planned processing in the EU. More details will follow in our privacy policy at launch.",
+             q3:"Who is it for?", a3:"SMBs, startups, agencies and online shops that want pragmatic compliance."
+        },
+        contact:{title:"Contact", copy:'Email us at <a href="mailto:hallo@regulus.ai">hallo@regulus.ai</a> – we’ll get back to you.'},
+        foot:{tagline:"The AI-powered compliance buddy for SMBs. Trustworthy, secure, simple.", product:"Product", legal:"Legal", follow:"Follow us", imprint:"Imprint", privacy:"Privacy", terms:"Terms"},
+        cookie:{title:"Cookies & privacy", copy:"We use cookies for essential features. See details in our", accept:"Accept", decline:"Decline"},
+        modal:{close:"Close"}
+      }
+    };
+
+    function i18nText(key){
+      const lang = document.documentElement.lang || 'de';
+      const path = key.split('.');
+      let ref = i18n[lang];
+      for(const p of path){ if(ref && typeof ref === 'object'){ ref = ref[p]; } }
+      return (typeof ref === 'string') ? ref : key;
+    }
+
+    function setLang(lang){
+      const root = document.documentElement;
+      root.lang = lang;
+      // update all [data-i18n] text nodes
+      document.querySelectorAll('[data-i18n]').forEach(el=>{
+        const key = el.getAttribute('data-i18n');
+        const txt = i18nText(key);
+        if(/<a |<br|&nbsp;|<\/\w+>/.test(txt)){ el.innerHTML = txt; }
+        else { el.textContent = txt; }
+      });
+      // update modal buttons if any modal is open
+      document.querySelectorAll('.modal .close')?.forEach(b=> b.textContent = i18nText('modal.close'));
+      // buttons state
+      const deBtns = [document.getElementById('langDE'), document.getElementById('langDEm')].filter(Boolean);
+      const enBtns = [document.getElementById('langEN'), document.getElementById('langENm')].filter(Boolean);
+      if(lang==='de'){ deBtns.forEach(b=>b?.classList.add('active')); enBtns.forEach(b=>b?.classList.remove('active')); }
+      else { enBtns.forEach(b=>b?.classList.add('active')); deBtns.forEach(b=>b?.classList.remove('active')); }
+      localStorage.setItem('regulusai_lang', lang);
+    }
+
+    // Lang init (korrekte Operator-Präzedenz!)
+    const browserIsDE = ((navigator.language || 'de').toLowerCase().startsWith('de'));
+    const saved = localStorage.getItem('regulusai_lang');
+    const initialLang = saved ? saved : (browserIsDE ? 'de' : 'en');
+    setLang(initialLang);
+
+    document.getElementById('langDE')?.addEventListener('click',()=> setLang('de'));
+    document.getElementById('langEN')?.addEventListener('click',()=> setLang('en'));
+    document.getElementById('langDEm')?.addEventListener('click',()=> setLang('de'));
+    document.getElementById('langENm')?.addEventListener('click',()=> setLang('en'));
+  </script>
+</body>
+</html>
